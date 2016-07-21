@@ -12,7 +12,28 @@ Many files will be deleted incrementally.
 
 July 2016
 
+## How to run
 
+You need the below properties. Use Spring boot properties different files or env as you see fit.
+For Eclipse and dev tools, use secret as spring active profile and add an `application-secret.yml` alongside the `application.yml`
+We encourage to do that as `.gitignore` will ignore the `application-secret.yml`
+
+On command line
+```
+./mvnw clean package -DskipTests
+java -Dspring.profile.active=secret ...
+```
+
+Example `application-secret.yml`
+```
+---
+cf:
+  host: api.run.smaugsystemdomain
+  username: admin
+  password: xxx
+```
+
+You should use uaac to create an admin user instead of use the admin user from your install, so that you can rotate passwords.
 
 
 
