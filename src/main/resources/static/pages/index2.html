@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Cloud Foundry Admin Report</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="../bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Timeline CSS -->
+    <link href="../dist/css/timeline.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body ng-app="Main2App" >
+
+    <div id="wrapper">
+        
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">Cloud Foundry Admin Report</a>
+                <a class="navbar-brand" href="index2.html">[App Events]</a>
+                <a class="navbar-brand" href="index3.html">[Orgs Spaces Apps]</a>
+                <a class="navbar-brand" href="index_sb2.html">[Template]</a>
+            </div>
+         </nav>
+           	        
+        <div id="page-wrapper">
+        <div class="row">
+        
+        <div class="col-lg-6 col-md-4">
+                <div ng-controller="AppEventsController as evs">
+                    <ul id="side-menu" >
+        
+                      <li class="list-group-item" ng-repeat="(key, value) in events">
+                        <small>
+                        <i class="fa fa-comment fa-fw small"></i> 
+                        {*{ value.entity.state }*}
+                        {*{ value.entity.app_name }*}
+						<span class="pull-left text-muted small entity-metadata" >
+                          <em>{*{ osa.orgs[value.entity.org_guid] }*}</em><!-- we use OSA and not urlByApp as App might be destroyed -->
+                          /
+                          <em>{*{ value.entity.space_name }*}</em>
+                        </span>
+                        <span class="pull-right text-muted small">
+                          <a href="/PCF/{*{osa.urlByApp[value.entity.app_guid][1]}*}#events"><!-- TODO intercept and avoid redirect if no org/space/app -->
+                          <!-- organizations/{*{value.entity.org_guid}*}/spaces/{*{value.entity.space_guid}*}/applications/{*{value.entity.app_guid}*}#events -->
+                          <em>{*{ value.metadata.created_at }*}</em></a>
+                        </span>
+                        </small>
+                      </li>
+					</ul>
+				</div>
+				</div>
+        <div class="col-lg-6 col-md-4">
+                <div ng-controller="FailedAppsController as fevs">
+                    <ul id="side-menu" >
+        
+                      <li class="list-group-item" ng-repeat="(key, value) in failed">
+                        <small>
+                        <i class="fa fa-comment fa-fw small"></i> 
+                        {*{ value.entity.staging_failed_reason }*}
+                        {*{ value.entity.name }*}
+                        <span class="pull-left text-muted small entity-metadata" >
+                          <em>{*{ urlByApp[value.metadata.guid][0].split('/')[0] }*}</em>
+                          /
+                          <em>{*{ urlByApp[value.metadata.guid][0].split('/')[1] }*}</em>
+                        </span>
+                        <span class="pull-right text-muted small">
+                          <a href="/PCF/{*{urlByApp[value.metadata.guid][1]}*}">
+                          <em>{*{ value.metadata.created_at }*}</em></a>
+                        </span>
+                        </small>
+                      </li>
+					</ul>
+				</div>
+			</div>
+			</div>
+        </div>
+        <!-- /#page-wrapper -->
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+
+    <!-- Angular Apps -->
+    <script src="../bower_components/Chart.js/Chart.min.js"></script>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/tc-angular-chartjs/dist/tc-angular-chartjs.min.js"></script>
+    <script src="../js/appevents.js"></script>
+    <script src="../js/failedapps.js"></script>
+    <script src="../js/main2.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="../bower_components/metisMenu/dist/metisMenu.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="../dist/js/sb-admin-2.js"></script>
+
+
+</body>
+
+</html>

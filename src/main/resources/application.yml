@@ -1,0 +1,10 @@
+---
+## CC is by default securing the app
+security:
+  basic:
+    enabled: false
+    
+# faster shutdown
+spring:
+  jmx:
+    enabled: false
