@@ -1,3 +1,7 @@
+# ignore application-secret.yml that will be used for testing on labs env.
+application-secret.yml
+
+
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
 *.o
 *.a
@@ -32,3 +36,4 @@ vcap_services_template.json
 admin-portal
 coverage.out
 node_modules
+/target/
