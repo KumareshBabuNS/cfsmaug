@@ -1,3 +1,23 @@
+# IMPORTANT
+
+THIS IS A FORK WITH MASSIVE REFACTORING TO SPRING BOOT and extra features
+
+We did a fork to link to the original project but we don't expect to do pull request or merge.
+
+The project is very unstable and has no release yet.
+
+All documentation below does not apply
+Many files will be deleted incrementally.
+
+
+July 2016
+
+
+
+
+
+
+
 # admin-portal
 
 ### this is an admin portal to show some metrics about your foundation.
