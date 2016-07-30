@@ -1,7 +1,11 @@
 ---
-name: adminportal
-buildpack: http://github.com/ryandotsmith/null-buildpack.git
-command: ./main
-services:
-- admin-user-information
-
+applications:
+- name: cfsmaug
+  memory: 512MB
+  instances: 1
+  services:
+    - smaug-api
+  #env:
+    #cf.username: admin
+    #cf.password: wvS4ysFrb5E8!
+    #cf.host: api.system.pcfnl.examples.cf

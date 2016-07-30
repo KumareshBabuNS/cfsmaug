@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -49,6 +50,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import io.pivotal.labs.cfenv.CloudFoundryEnvironment;
+import io.pivotal.labs.cfenv.CloudFoundryService;
 import pivotal.smaug.json.AppAggregate;
 import pivotal.smaug.json.OrgSpaceApp;
 import pivotal.smaug.json.UserAggregate;
@@ -63,33 +66,39 @@ public class SmaugController {
 	private static OrgSpaceApp H = new OrgSpaceApp();
 
 	@Bean
-	CloudFoundryClient cloudFoundryClient(@Value("${cf.host}") String host,
-										  @Value("${cf.username}") String username,
-										 @Value("${cf.password}") String password
-											 ) {
+	CloudFoundryClient cloudFoundryClient() {
 
 		
 		CloudFoundryClient cfc = ReactorCloudFoundryClient.builder()
 				.connectionContext(
 						DefaultConnectionContext.builder()
-					    .apiHost(host)
+					    .apiHost(SmaugApplication.CONFIG.host)
 					    .skipSslValidation(true)
 					    .build()
 				)
 				.tokenProvider(
 						PasswordGrantTokenProvider.builder()
-					    .password(password)
-					    .username(username)
+					    .password(SmaugApplication.CONFIG.password)
+					    .username(SmaugApplication.CONFIG.username)
 					    .build()
 				).build();
-				
-				//.password("bb913e0143c121504957")
-				
+								
 		return cfc;
 	}
 
 	@Autowired
 	CloudFoundryClient cfc;
+		
+	@Scheduled(cron="2 2 2 * * *")// at 2 am 2 min 2 sec every day
+	public void refreshConnection() throws Throwable {
+		LOG.info("Scheduled re-connection");
+		//clean H
+		H = new OrgSpaceApp();
+		cfc = cloudFoundryClient();
+		cfo = cloudFoundryOperations();
+		// noone will navigate to app details so we force it as well
+		apps();
+	}
 
 	@Bean
 	CloudFoundryOperations cloudFoundryOperations(/*
@@ -142,7 +151,6 @@ public class SmaugController {
 				H.servicesBySpace.put(si.getEntity().getSpaceId(), servicesInSpace);
 			}
 		}
-
 		
 		return cfo;
 	}
@@ -152,7 +160,7 @@ public class SmaugController {
 
 	@RequestMapping(value = "/PCF/**", method = RequestMethod.GET)
 	public ModelAndView PCF(ModelMap model, HttpServletRequest rq) throws Throwable {
-		return new ModelAndView("redirect:https://apps."+"run.haas-35.pez.pivotal.io/"+rq.getRequestURI().substring(5), model);
+		return new ModelAndView("redirect:https://apps"+SmaugApplication.CONFIG.host.substring(SmaugApplication.CONFIG.host.indexOf('.')+1)+"/"+rq.getRequestURI().substring(5), model);
 	}
 	
 	
@@ -211,7 +219,7 @@ public class SmaugController {
 			if (l.size() <= 0) break;
 			for (ApplicationResource ar : l) {
 				ApplicationEntity ae = ar.getEntity();
-				if ("STOPPED".equals(ae.getState()) && !isN(ae.getStagingFailedReason())) {
+				if ("STOPPED".equals(ae.getState()) && !U.isN(ae.getStagingFailedReason())) {
 					failedApps.add(ar);
 				}
 			}
@@ -226,7 +234,7 @@ public class SmaugController {
 		OrgSpaceApp osa = new OrgSpaceApp();
 		osa.orgs = H.orgs;
 		osa.spaces = H.spaces;
-		osa.appsBySpace = H.appsBySpace;
+		//osa.appsBySpace = H.appsBySpace;
 		osa.spacesByOrg = H.spacesByOrg;
 		osa.servicesBySpace = H.servicesBySpace;
 		// appsBySpace is empty
@@ -317,7 +325,7 @@ public class SmaugController {
 				apps.RunningDisk += (a.getInstances() * a.getDiskQuota())/1024;
 			} else if ("STOPPED".equals(a.getState())) {
 				apps.StoppedStateCount++;
-				if (!isN(a.getStagingFailedReason())) {
+				if (!U.isN(a.getStagingFailedReason())) {
 					System.err.println(a.getName() + " STOPPED "+a.getStagingFailedReason() + " - " + id);
 					apps.FailedInStoppedStateCount++;
 				}
@@ -327,10 +335,10 @@ public class SmaugController {
 			
 
 			String bp = a.getBuildpack();
-			if (isN(bp)) {
+			if (U.isN(bp)) {
 				bp = a.getDetectedBuildpack();
-				if (isN(bp)) {
-					if (! isN(a.getDockerImage())) {
+				if (U.isN(bp)) {
+					if (! U.isN(a.getDockerImage())) {
 						bp = "docker";
 						apps.DiegoAppsCount++;//TODO in UI
 					} else {
@@ -365,8 +373,4 @@ public class SmaugController {
 		}
 	}
 	
-	static boolean isN(String s) {
-		return (s == null || s.length()==0);
-	}
-
 }

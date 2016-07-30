@@ -84,9 +84,17 @@
 			<artifactId>scala-library</artifactId>
 			<version>2.11.0</version>
 		</dependency>
+	
+	<!--  for cf-env -->	
+		<dependency>
+    <groupId>io.pivotal.labs</groupId>
+    <artifactId>cf-env</artifactId>
+    <version>0.0.1</version>
+	</dependency>
 		
 		
- <dependency>
+	<!--  for STS dev tools -->	
+	 <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-devtools</artifactId>
         <optional>true</optional>

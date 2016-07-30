@@ -12,10 +12,18 @@ Many files will be deleted incrementally.
 
 July 2016
 
-## How to run
+## How to run in CF
+
+You need to create a user provided service named `smaug-api`. Please refer to the `deploy` folder.
+Note that env vars (see below) will NOT override the cups when cloud profile is detected.
+ 
+## How to run standalone or from source
+
+
+You may need to add `cf-env` to your local maven repository. Please explore the `lib` folder.
 
 You need the below properties. Use Spring boot properties different files or env as you see fit.
-For Eclipse and dev tools, use secret as spring active profile and add an `application-secret.yml` alongside the `application.yml`
+For Eclipse and dev tools, use secret as spring active profile and add an `application-secret.yml` in the project folder.
 We encourage to do that as `.gitignore` will ignore the `application-secret.yml`
 
 On command line
