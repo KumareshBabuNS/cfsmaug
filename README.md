@@ -4,18 +4,13 @@ THIS IS A FORK WITH MASSIVE REFACTORING TO SPRING BOOT and extra features
 
 We did a fork to link to the original project but we don't expect to do pull request or merge.
 
-The project is very unstable and has no release yet.
-
-All documentation below does not apply
-Many files will be deleted incrementally.
-
-
+The project is very unstable and has alpha releases.
 July 2016
 
 ## How to run in CF
 
 You need to create a user provided service named `smaug-api`. Please refer to the `deploy` folder.
-Note that env vars (see below) will NOT override the cups when cloud profile is detected.
+Note that env vars from cf env or manifest (see below) will NOT override the cups when `cloud` profile is detected (which will be when deploying cfsmaug in CF).
  
 ## How to run standalone or from source
 
@@ -43,6 +38,8 @@ cf:
 
 You should use uaac to create an admin user instead of use the admin user from your install, so that you can rotate passwords.
 
+
+# THE BELOW DOC IS LEGACY AND CAN BE IGNORED
 
 
 

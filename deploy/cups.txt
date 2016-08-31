@@ -1,1 +1,1 @@
-cf cups smaug-api -p "username", "password", "host"
+cf cups smaug-api -p "username, password, host"
